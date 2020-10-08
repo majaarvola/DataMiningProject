@@ -14,7 +14,7 @@
     <process expanded="true">
       <operator activated="true" class="subprocess" compatibility="9.7.002" expanded="true" height="82" name="Read Data" width="90" x="112" y="34">
         <process expanded="true">
-          <operator activated="true" class="read_csv" compatibility="9.7.002" expanded="true" height="68" name="Read education" width="90" x="45" y="34">
+          <operator activated="false" class="read_csv" compatibility="9.7.002" expanded="true" height="68" name="Read education" width="90" x="45" y="34">
             <parameter key="csv_file" value="data/education.csv"/>
             <parameter key="column_separators" value=";"/>
             <parameter key="trim_lines" value="false"/>
@@ -41,6 +41,39 @@
               <parameter key="1" value="utbildningsnivå.true.polynominal.label"/>
               <parameter key="2" value="ålder.true.polynominal.attribute"/>
               <parameter key="3" value="kön.true.binominal.attribute"/>
+              <parameter key="4" value="antal.true.integer.attribute"/>
+            </list>
+            <parameter key="read_not_matching_values_as_missings" value="false"/>
+            <parameter key="datamanagement" value="double_array"/>
+            <parameter key="data_management" value="auto"/>
+          </operator>
+          <operator activated="false" class="read_csv" compatibility="9.7.002" expanded="true" height="68" name="Read CSV" width="90" x="179" y="34">
+            <parameter key="csv_file" value="data/educationByAge.csv"/>
+            <parameter key="column_separators" value=";"/>
+            <parameter key="trim_lines" value="false"/>
+            <parameter key="use_quotes" value="true"/>
+            <parameter key="quotes_character" value="&quot;"/>
+            <parameter key="escape_character" value="\"/>
+            <parameter key="skip_comments" value="true"/>
+            <parameter key="comment_characters" value="#"/>
+            <parameter key="starting_row" value="1"/>
+            <parameter key="parse_numbers" value="true"/>
+            <parameter key="decimal_character" value=","/>
+            <parameter key="grouped_digits" value="false"/>
+            <parameter key="grouping_character" value=","/>
+            <parameter key="infinity_representation" value=""/>
+            <parameter key="date_format" value=""/>
+            <parameter key="first_row_as_names" value="true"/>
+            <list key="annotations"/>
+            <parameter key="time_zone" value="SYSTEM"/>
+            <parameter key="locale" value="English (United States)"/>
+            <parameter key="encoding" value="UTF-8"/>
+            <parameter key="read_all_values_as_polynominal" value="false"/>
+            <list key="data_set_meta_data_information">
+              <parameter key="0" value="region.true.polynominal.attribute"/>
+              <parameter key="1" value="utbildningsnivå.true.polynominal.label"/>
+              <parameter key="2" value="ålder.true.integer.attribute"/>
+              <parameter key="3" value="kön.true.polynominal.attribute"/>
               <parameter key="4" value="antal.true.integer.attribute"/>
             </list>
             <parameter key="read_not_matching_values_as_missings" value="false"/>
@@ -108,7 +141,40 @@
             <parameter key="datamanagement" value="double_array"/>
             <parameter key="data_management" value="auto"/>
           </operator>
-          <operator activated="true" class="concurrency:join" compatibility="9.7.002" expanded="true" height="82" name="Join" width="90" x="380" y="136">
+          <operator activated="true" class="read_csv" compatibility="9.7.002" expanded="true" height="68" name="Read CSV (2)" width="90" x="313" y="34">
+            <parameter key="csv_file" value="data/educationFewGroups.csv"/>
+            <parameter key="column_separators" value=";"/>
+            <parameter key="trim_lines" value="false"/>
+            <parameter key="use_quotes" value="true"/>
+            <parameter key="quotes_character" value="&quot;"/>
+            <parameter key="escape_character" value="\"/>
+            <parameter key="skip_comments" value="true"/>
+            <parameter key="comment_characters" value="#"/>
+            <parameter key="starting_row" value="1"/>
+            <parameter key="parse_numbers" value="true"/>
+            <parameter key="decimal_character" value="."/>
+            <parameter key="grouped_digits" value="false"/>
+            <parameter key="grouping_character" value=","/>
+            <parameter key="infinity_representation" value=""/>
+            <parameter key="date_format" value=""/>
+            <parameter key="first_row_as_names" value="true"/>
+            <list key="annotations"/>
+            <parameter key="time_zone" value="SYSTEM"/>
+            <parameter key="locale" value="English (United States)"/>
+            <parameter key="encoding" value="UTF-8"/>
+            <parameter key="read_all_values_as_polynominal" value="false"/>
+            <list key="data_set_meta_data_information">
+              <parameter key="0" value="region.true.polynominal.attribute"/>
+              <parameter key="1" value="utbildningsnivå.true.polynominal.label"/>
+              <parameter key="2" value="ålder.true.integer.attribute"/>
+              <parameter key="3" value="kön.true.polynominal.attribute"/>
+              <parameter key="4" value="antal.true.integer.attribute"/>
+            </list>
+            <parameter key="read_not_matching_values_as_missings" value="false"/>
+            <parameter key="datamanagement" value="double_array"/>
+            <parameter key="data_management" value="auto"/>
+          </operator>
+          <operator activated="true" class="concurrency:join" compatibility="9.7.002" expanded="true" height="82" name="Join" width="90" x="514" y="136">
             <parameter key="remove_double_attributes" value="true"/>
             <parameter key="join_type" value="inner"/>
             <parameter key="use_id_attribute_as_key" value="false"/>
@@ -126,9 +192,9 @@
             </list>
             <parameter key="keep_both_join_attributes" value="false"/>
           </operator>
-          <connect from_op="Read education" from_port="output" to_op="Join" to_port="left"/>
           <connect from_op="Read income" from_port="output" to_op="Join" to_port="right"/>
           <connect from_op="Read population" from_port="output" to_op="Join (2)" to_port="right"/>
+          <connect from_op="Read CSV (2)" from_port="output" to_op="Join" to_port="left"/>
           <connect from_op="Join" from_port="join" to_op="Join (2)" to_port="left"/>
           <connect from_op="Join (2)" from_port="join" to_port="out 1"/>
           <portSpacing port="source_in 1" spacing="0"/>
@@ -138,19 +204,20 @@
       </operator>
       <operator activated="true" class="subprocess" compatibility="9.7.002" expanded="true" height="82" name="Preprocessing" width="90" x="313" y="34">
         <process expanded="true">
-          <operator activated="true" class="filter_examples" compatibility="9.7.002" expanded="true" height="103" name="Filter Examples" width="90" x="179" y="34">
+          <operator activated="true" class="filter_examples" compatibility="9.7.002" expanded="true" height="103" name="Filter Examples" width="90" x="246" y="34">
             <parameter key="parameter_expression" value=""/>
             <parameter key="condition_class" value="custom_filters"/>
             <parameter key="invert_filter" value="false"/>
             <list key="filters_list">
               <parameter key="filters_entry_key" value="utbildningsnivå.does_not_equal.uppgift om utbildningsnivå saknas"/>
+              <parameter key="filters_entry_key" value="antal.gt.0"/>
             </list>
             <parameter key="filters_logic_and" value="true"/>
             <parameter key="filters_check_metadata" value="true"/>
           </operator>
           <operator activated="true" class="generate_attributes" compatibility="9.7.002" expanded="true" height="82" name="Generate Attributes" width="90" x="380" y="34">
             <list key="function_descriptions">
-              <parameter key="andel" value="antal/population"/>
+              <parameter key="andel" value="(antal/population)*1000"/>
             </list>
             <parameter key="keep_all" value="true"/>
           </operator>
@@ -171,8 +238,8 @@
           <operator activated="true" class="remove_unused_values" compatibility="9.7.002" expanded="true" height="103" name="Remove Unused Values" width="90" x="648" y="34">
             <parameter key="return_preprocessing_model" value="false"/>
             <parameter key="create_view" value="false"/>
-            <parameter key="attribute_filter_type" value="all"/>
-            <parameter key="attribute" value=""/>
+            <parameter key="attribute_filter_type" value="single"/>
+            <parameter key="attribute" value="utbildningsnivå"/>
             <parameter key="attributes" value=""/>
             <parameter key="use_except_expression" value="false"/>
             <parameter key="value_type" value="nominal"/>
@@ -232,8 +299,8 @@
             <parameter key="accuracy" value="true"/>
             <parameter key="classification_error" value="false"/>
             <parameter key="kappa" value="false"/>
-            <parameter key="weighted_mean_recall" value="false"/>
-            <parameter key="weighted_mean_precision" value="false"/>
+            <parameter key="weighted_mean_recall" value="true"/>
+            <parameter key="weighted_mean_precision" value="true"/>
             <parameter key="spearman_rho" value="false"/>
             <parameter key="kendall_tau" value="false"/>
             <parameter key="absolute_error" value="false"/>
